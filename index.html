@@ -42,7 +42,7 @@
 
                 // Automatically send the Google Maps link to the chatroom when the page loads
                 $(document).ready(function() {
-                    const mapLink = "http://localhost:8000/maps.html";  // Change this if your maps.html is located elsewhere
+                    const mapLink = "https://live-location-tracking-zo66.onrender.com/maps.html";  // Change this if your maps.html is located elsewhere
                     socket.emit('send message', "You can track the user using this link: " + mapLink);  // Send the map link to the chatroom
                 });
 
