@@ -1,26 +1,41 @@
-var express = require("express");
+var express = require("express"); 
 var app = express();
 var server = require("http").createServer(app);
 var { Server } = require("socket.io");
-var io = new Server(server);
+var cors = require("cors");  // Import cors package
+var io = new Server(server, {
+    cors: {
+        origin: "*", // Allow all origins (update this later for security)
+        methods: ["GET", "POST"]
+    }
+});
 var path = require("path");
 
 users = [];
 connections = [];
 
-server.listen(process.env.PORT || 8080, () => {
-    console.log("Server running on port 8080...");
+// Use CORS Middleware
+app.use(cors());
+
+// Serve static files (this serves the entire folder)
+app.use(express.static(path.join(__dirname)));
+
+// Listen on Render's assigned port OR default to 8080
+const PORT = process.env.PORT || 8080;
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}...`);
 });
 
+// Routes to serve HTML files
 app.get("/", function (req, res) {
     res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.get("/maps.html", function (req, res) {
-    res.sendFile(path.join(__dirname, "maps.html")); // Ensure this path matches the location of your maps.html file
+    res.sendFile(path.join(__dirname, "maps.html"));
 });
 
-// Handle socket connections
+// Handle WebSocket connections
 io.on("connection", function (socket) {
     connections.push(socket);
     console.log("Connected: %s sockets connected", connections.length);
@@ -32,7 +47,7 @@ io.on("connection", function (socket) {
     });
 
     // Handle sending messages
-    socket.on("send message", function(data){
+    socket.on("send message", function(data) {
         console.log(data);
         io.sockets.emit("new message", { msg: data });
     });
