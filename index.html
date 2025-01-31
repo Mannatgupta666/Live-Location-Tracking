@@ -1,55 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Location Tracker</title>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBh-_JWFESJ5MDxUbdUJ_P5xoKFEiR_LW8&callback=initMap" async defer></script>
-    <style>
-        #map { height: 100vh; width: 100%; }
-    </style>
-</head>
-<body>
-    <div id="map"></div>
-
+<html>
+  <head>
+    <title>Real-time Device Location</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBh-_JWFESJ5MDxUbdUJ_P5xoKFEiR_LW8&callback=initMap&v=weekly" 
+    async></script>
     <script>
-        let map, marker;
+      let map, marker;
 
-        function initMap() {
-            map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 15,
-                center: { lat: 0, lng: 0 } // Default center
-            });
+      // Initialize the map
+      function initMap() {
+        // Set initial map options
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: 28.9784, lng: 77.0330 }, // Default position (e.g., Roorkee)
+          zoom: 15,
+        });
 
-            marker = new google.maps.Marker({
-                position: { lat: 0, lng: 0 },
-                map: map,
-                title: "Your Location"
-            });
+        // Create a marker for the current location
+        marker = new google.maps.Marker({
+          map: map,
+          position: { lat: 28.9784, lng: 77.0330 }, // Initial position
+        });
 
-            trackLocation();
-        }
+        // Start tracking the device location
+        trackDeviceLocation();
+      }
 
-        function trackLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.watchPosition(
-                    (position) => {
-                        let lat = position.coords.latitude;
-                        let lng = position.coords.longitude;
+      // Function to track device location
+      function trackDeviceLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.watchPosition(
+            function (position) {
+              // Get the new coordinates
+              const newLat = position.coords.latitude;
+              const newLng = position.coords.longitude;
 
-                        let newPosition = { lat, lng };
-                        marker.setPosition(newPosition);
-                        map.setCenter(newPosition);
-                    },
-                    (error) => {
-                        console.error("Error getting location: ", error);
-                    },
-                    { enableHighAccuracy: true }
-                );
-            } else {
-                alert("Geolocation is not supported by this browser.");
+              // Update the map center
+              map.setCenter(new google.maps.LatLng(newLat, newLng));
+
+              // Update the marker's position
+              marker.setPosition(new google.maps.LatLng(newLat, newLng));
+
+              // Optionally, add a message showing the coordinates
+              console.log(`Current Location: ${newLat}, ${newLng}`);
+            },
+            function (error) {
+              alert("Error getting location: " + error.message);
+            },
+            {
+              enableHighAccuracy: true,
+              maximumAge: 10000, // Refresh every 10 seconds
+              timeout: 5000, // Timeout after 5 seconds
             }
+          );
+        } else {
+          alert("Geolocation is not supported by this browser.");
         }
+      }
     </script>
-</body>
+    <style>
+      #map {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Track Real-time Location</h1>
+    <div id="map"></div>
+  </body>
 </html>
+
