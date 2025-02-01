@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,3 +56,62 @@
   <div id="map" style="height: 500px; width: 100%;"></div>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Time Location Tracking</title>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBh-_JWFESJ5MDxUbdUJ_P5xoKFEiR_LW8&callback=initMap" async defer></script>
+  <script>
+    let map, marker;
+
+    function initMap() {
+      // Initial location (default set to coordinates 0,0)
+      const initialLocation = { lat: 0, lng: 0 };
+
+      // Initialize the map with default location
+      map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 15,
+        center: initialLocation,
+      });
+
+      // Create a marker at the initial location
+      marker = new google.maps.Marker({
+        position: initialLocation,
+        map: map,
+        title: "Live Location",
+      });
+    }
+
+    // WebSocket connection to the server (replace 'localhost:8080' with your WebSocket server)
+    const socket = new WebSocket("ws://localhost:8080");
+
+    socket.onopen = () => {
+      console.log("WebSocket connection established.");
+    };
+
+    // Listen for location updates from the WebSocket server
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === "location") {
+        const { latitude, longitude } = data;
+        updateMarkerLocation(latitude, longitude);
+      }
+    };
+
+    // Update the marker's location on the map
+    function updateMarkerLocation(latitude, longitude) {
+      const newLocation = { lat: latitude, lng: longitude };
+      marker.setPosition(newLocation); // Move the marker to the new position
+      map.setCenter(newLocation); // Optionally, center the map around the marker
+    }
+  </script>
+</head>
+<body>
+  <h3>Live Location Tracking</h3>
+  <div id="map" style="height: 500px; width: 100%;"></div>
+</body>
+</html>
+>>>>>>> a281b2b (Initial commit - Uploaded project)
