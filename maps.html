@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,17 +9,14 @@
     let map, marker;
 
     function initMap() {
-      // Initial location (default set to coordinates 0,0)
       const initialLocation = { lat: 0, lng: 0 };
       console.log("initMap is called.");
 
-      // Initialize the map with default location
       map = new google.maps.Map(document.getElementById("map"), {
         zoom: 15,
         center: initialLocation,
       });
 
-      // Create a marker at the initial location
       marker = new google.maps.Marker({
         position: initialLocation,
         map: map,
@@ -28,14 +24,12 @@
       });
     }
 
-    // WebSocket connection to the server (replace 'localhost:8080' with your WebSocket server)
     const socket = new WebSocket("wss://live-location-tracking-zo66.onrender.com");
 
     socket.onopen = () => {
       console.log("WebSocket connection established.");
     };
 
-    // Listen for location updates from the WebSocket server
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.type === "location") {
@@ -44,11 +38,10 @@
       }
     };
 
-    // Update the marker's location on the map
     function updateMarkerLocation(latitude, longitude) {
       const newLocation = { lat: latitude, lng: longitude };
-      marker.setPosition(newLocation); // Move the marker to the new position
-      map.setCenter(newLocation); // Optionally, center the map around the marker
+      marker.setPosition(newLocation);
+      map.setCenter(newLocation);
     }
   </script>
 </head>
