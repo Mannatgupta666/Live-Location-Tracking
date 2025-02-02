@@ -12,12 +12,14 @@
       const initialLocation = { lat: 0, lng: 0 };
       console.log("initMap is called.");
 
+      // Initialize the map with default location
       map = new google.maps.Map(document.getElementById("map"), {
         zoom: 15,
         center: initialLocation,
       });
 
-      marker = new google.maps.Marker({
+      // Create a new AdvancedMarkerElement (recommended over google.maps.Marker)
+      marker = new google.maps.marker.AdvancedMarkerElement({
         position: initialLocation,
         map: map,
         title: "Live Location",
@@ -40,8 +42,8 @@
 
     function updateMarkerLocation(latitude, longitude) {
       const newLocation = { lat: latitude, lng: longitude };
-      marker.setPosition(newLocation);
-      map.setCenter(newLocation);
+      marker.setPosition(newLocation); // Move the marker to the new position
+      map.setCenter(newLocation); // Optionally, center the map around the marker
     }
   </script>
 </head>
