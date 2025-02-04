@@ -18,11 +18,11 @@
         center: initialLocation,
       });
 
-      // Create a new AdvancedMarkerElement (recommended over google.maps.Marker)
-      marker = new google.maps.marker.AdvancedMarkerElement({
+      // Create a standard marker
+      marker = new google.maps.Marker({
         position: initialLocation,
         map: map,
-        title: "Live Location",
+        title: "Live Location", // This title is optional for standard markers
       });
     }
 
@@ -33,6 +33,7 @@
     };
 
     socket.onmessage = (event) => {
+      console.log("Received WebSocket message:", event.data);
       const data = JSON.parse(event.data);
       if (data.type === "location") {
         const { latitude, longitude } = data;
@@ -41,6 +42,10 @@
     };
 
     function updateMarkerLocation(latitude, longitude) {
+      if (!marker) {
+    console.warn("Marker not initialized yet.");
+    return;
+  }
       const newLocation = { lat: latitude, lng: longitude };
       marker.setPosition(newLocation); // Move the marker to the new position
       map.setCenter(newLocation); // Optionally, center the map around the marker
