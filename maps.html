@@ -4,7 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Real-Time Location Tracking</title>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBh-_JWFESJ5MDxUbdUJ_P5xoKFEiR_LW8&callback=initMap" async defer></script>
+  
+  <!-- Google Maps API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBh-_JWFESJ5MDxUbdUJ_P5xoKFEiR_LW8&loading=async&callback=initMap" async defer></script>
+
+  <!-- Socket.IO Client -->
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
   <script>
     let map, marker;
 
@@ -26,20 +32,28 @@
       });
     }
 
-    const socket = new WebSocket("wss://live-location-tracking-zo66.onrender.com/");
+    // ✅ Correct Socket.IO Initialization
+    const socket = io("https://live-location-tracking-zo66.onrender.com");
 
-    socket.onopen = () => {
-      console.log("WebSocket connection established.");
-    };
+    // ✅ Handle Connection
+    socket.on("connect", () => {
+      console.log("Socket.IO connection established.");
+    });
 
-    socket.onmessage = (event) => {
-      console.log("Received WebSocket message:", event.data);
-      const data = JSON.parse(event.data);
-      if (data.type === "location") {
-        const { latitude, longitude } = data;
-        updateMarkerLocation(latitude, longitude);
+    // ✅ Handle Incoming Location Data
+    socket.on("location", (data) => {
+      console.log("Received location update:", data);
+      if (data.latitude !== undefined && data.longitude !== undefined) {
+        updateMarkerLocation(data.latitude, data.longitude);
+      } else {
+        console.warn("Invalid location data received:", data);
       }
-    };
+    });
+
+    // ✅ Handle Disconnection
+    socket.on("disconnect", () => {
+      console.log("Socket.IO disconnected.");
+    });
 
     function updateMarkerLocation(latitude, longitude) {
       if (!marker) {

@@ -58,6 +58,6 @@ io.on("connection", function (socket) {
     // Handle sending location data
     socket.on("send location", function(locationData) {
         console.log("📍 Received Location:", locationData);
-        io.emit("update location", locationData);
+        io.emit("location", locationData);
     });
 });
