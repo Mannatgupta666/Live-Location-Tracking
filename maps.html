@@ -26,7 +26,7 @@
       });
     }
 
-    const socket = new WebSocket("wss://live-location-tracking-zo66.onrender.com");
+    const socket = new WebSocket("wss://live-location-tracking-zo66.onrender.com/");
 
     socket.onopen = () => {
       console.log("WebSocket connection established.");
@@ -43,9 +43,9 @@
 
     function updateMarkerLocation(latitude, longitude) {
       if (!marker) {
-    console.warn("Marker not initialized yet.");
-    return;
-  }
+        console.warn("Marker not initialized yet.");
+        return;
+      }
       const newLocation = { lat: latitude, lng: longitude };
       marker.setPosition(newLocation); // Move the marker to the new position
       map.setCenter(newLocation); // Optionally, center the map around the marker
